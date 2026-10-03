@@ -151,6 +151,12 @@ jobs:
             echo "CONFIG_FIRMWARE_INCLUDE_${key#PLUGIN_}=${!key}" >> "$CONFIGFILE"
           done
 
+          # Disable NFS-related packages to avoid host-side rpc/rpc.h cross-compile issues
+          echo "CONFIG_FIRMWARE_INCLUDE_NFSD=n" >> "$CONFIGFILE"
+          echo "CONFIG_FIRMWARE_INCLUDE_NFSC=n" >> "$CONFIGFILE"
+          # (optional) also disable any specific nfs-utils flags if present
+          echo "CONFIG_FIRMWARE_INCLUDE_NFS_UTILS=n" >> "$CONFIGFILE" || true
+
           if [ "${{ inputs.cpufreq }}" = "true" ]; then
             echo "CONFIG_FIRMWARE_INCLUDE_OC=y" >> "$CONFIGFILE"
             echo "CONFIG_FIRMWARE_MT7621_OC=${{ inputs.mt7621_oc }}" >> "$CONFIGFILE"
